@@ -63,7 +63,7 @@ export class DocumentsController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: documentStorage,
-      limits: { fileSize: 10 * 1024 * 1024 },
+      limits: { fileSize: 25 * 1024 * 1024 },
     }),
   )
   create(
