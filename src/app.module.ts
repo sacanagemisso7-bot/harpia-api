@@ -11,6 +11,7 @@ import { InvestmentsModule } from './investments/investments.module';
 import { ReturnsModule } from './returns/returns.module';
 import { DocumentsModule } from './documents/documents.module';
 import { InteractionsModule } from './interactions/interactions.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -24,6 +25,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     ReturnsModule,
     DocumentsModule,
     InteractionsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
