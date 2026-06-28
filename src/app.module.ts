@@ -9,6 +9,7 @@ import { InvestorsModule } from './investors/investors.module';
 import { ProjectsModule } from './projects/projects.module';
 import { InvestmentsModule } from './investments/investments.module';
 import { ReturnsModule } from './returns/returns.module';
+import { DocumentsModule } from './documents/documents.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -20,6 +21,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     ProjectsModule,
     InvestmentsModule,
     ReturnsModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [
