@@ -1,0 +1,62 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { InvestmentsService } from './investments.service';
+import { CreateInvestmentDto } from './dto/create-investment.dto';
+import { UpdateInvestmentDto } from './dto/update-investment.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+
+interface AuthUser {
+  id: string;
+  email: string;
+  organizationId: string;
+}
+
+@Controller('investments')
+export class InvestmentsController {
+  constructor(private readonly investmentsService: InvestmentsService) {}
+
+  @Get()
+  findAll(
+    @CurrentUser() user: AuthUser,
+    @Query('investorId') investorId?: string,
+    @Query('projectId') projectId?: string,
+  ) {
+    return this.investmentsService.findAll(
+      user.organizationId,
+      investorId,
+      projectId,
+    );
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+    return this.investmentsService.findOne(id, user.organizationId);
+  }
+
+  @Post()
+  create(@CurrentUser() user: AuthUser, @Body() dto: CreateInvestmentDto) {
+    return this.investmentsService.create(user.organizationId, dto);
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthUser,
+    @Body() dto: UpdateInvestmentDto,
+  ) {
+    return this.investmentsService.update(id, user.organizationId, dto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+    return this.investmentsService.remove(id, user.organizationId);
+  }
+}
