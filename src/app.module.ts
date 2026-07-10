@@ -12,8 +12,9 @@ import { DevelopmentsModule } from './developments/developments.module';
 import { UnitTypesModule } from './unit-types/unit-types.module';
 import { UnitsModule } from './units/units.module';
 import { PriceTablesModule } from './price-tables/price-tables.module';
+import { InvestmentsModule } from './investments/investments.module';
+import { AllocationsModule } from './allocations/allocations.module';
 // Módulos antigos aguardando migração para o novo schema (comentados p/ build passar):
-// import { InvestmentsModule } from './investments/investments.module';
 // import { ReturnsModule } from './returns/returns.module';
 // import { DocumentsModule } from './documents/documents.module';
 // import { InteractionsModule } from './interactions/interactions.module';
@@ -32,7 +33,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     UnitTypesModule,
     UnitsModule,
     PriceTablesModule,
-    // InvestmentsModule,
+    InvestmentsModule,
+    AllocationsModule,
     // ReturnsModule,
     // DocumentsModule,
     // InteractionsModule,

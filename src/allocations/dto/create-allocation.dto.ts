@@ -1,16 +1,18 @@
-import { InvestmentType } from '@prisma/client';
 import {
   IsDateString,
-  IsEnum,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
 } from 'class-validator';
 
-export class CreateInvestmentDto {
+export class CreateAllocationDto {
   @IsString()
-  investorId: string;
+  investmentId: string;
+
+  @IsOptional()
+  @IsString()
+  developmentId?: string;
 
   @IsNumber()
   @IsPositive()
@@ -18,10 +20,6 @@ export class CreateInvestmentDto {
 
   @IsDateString()
   date: string;
-
-  @IsOptional()
-  @IsEnum(InvestmentType)
-  type?: InvestmentType;
 
   @IsOptional()
   @IsString()

@@ -27,13 +27,8 @@ export class InvestmentsController {
   findAll(
     @CurrentUser() user: AuthUser,
     @Query('investorId') investorId?: string,
-    @Query('projectId') projectId?: string,
   ) {
-    return this.investmentsService.findAll(
-      user.organizationId,
-      investorId,
-      projectId,
-    );
+    return this.investmentsService.findAll(user.organizationId, investorId);
   }
 
   @Get(':id')
