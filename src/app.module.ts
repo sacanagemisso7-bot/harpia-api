@@ -5,13 +5,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
-import { InvestorsModule } from './investors/investors.module';
-import { ProjectsModule } from './projects/projects.module';
-import { InvestmentsModule } from './investments/investments.module';
-import { ReturnsModule } from './returns/returns.module';
-import { DocumentsModule } from './documents/documents.module';
-import { InteractionsModule } from './interactions/interactions.module';
-import { DashboardModule } from './dashboard/dashboard.module';
+import { PeopleModule } from './people/people.module';
+// Módulos antigos aguardando migração para o novo schema (comentados p/ build passar):
+// import { ProjectsModule } from './projects/projects.module';
+// import { InvestmentsModule } from './investments/investments.module';
+// import { ReturnsModule } from './returns/returns.module';
+// import { DocumentsModule } from './documents/documents.module';
+// import { InteractionsModule } from './interactions/interactions.module';
+// import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -19,13 +20,13 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
     AuthModule,
-    InvestorsModule,
-    ProjectsModule,
-    InvestmentsModule,
-    ReturnsModule,
-    DocumentsModule,
-    InteractionsModule,
-    DashboardModule,
+    PeopleModule,
+    // ProjectsModule,
+    // InvestmentsModule,
+    // ReturnsModule,
+    // DocumentsModule,
+    // InteractionsModule,
+    // DashboardModule,
   ],
   controllers: [AppController],
   providers: [
