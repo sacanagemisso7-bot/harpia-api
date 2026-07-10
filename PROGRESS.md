@@ -1,3 +1,4 @@
 # Progresso — Harpia API
 
+- **[2026-07-10] — Novo seed (arquitetura de incorporadora):** Reescrito o `prisma/seed.ts` para o novo schema — org "Harpia Incorporadora", admin, 3 companies (1 incorporadora + 2 SPEs), 3 contas bancárias, 6 pessoas com papéis (João como INVESTIDOR+CLIENTE), 2 empreendimentos, 3 tipologias, 6 unidades com preços (Modelo B), e o fluxo Investment → Allocation (incl. caixa geral) → Return. Populado no Neon sem erro.
 - **[2026-07-10] — Novo schema (arquitetura de incorporadora):** Reescrito o `schema.prisma` para o modelo de plataforma de gestão de incorporadoras — Person (com PersonRole), Company (SPE/Incorporadora), BankAccount, Development (evolução de Project), UnitType, Unit, PriceTable, UnitPrice, e o fluxo Investment → Allocation → Return. Migration `new-architecture` aplicada (banco resetado; só havia seed). 16 tabelas criadas.
