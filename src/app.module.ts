@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { PeopleModule } from './people/people.module';
+import { CompaniesModule } from './companies/companies.module';
+import { BankAccountsModule } from './bank-accounts/bank-accounts.module';
 // Módulos antigos aguardando migração para o novo schema (comentados p/ build passar):
 // import { ProjectsModule } from './projects/projects.module';
 // import { InvestmentsModule } from './investments/investments.module';
@@ -21,6 +23,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     PrismaModule,
     AuthModule,
     PeopleModule,
+    CompaniesModule,
+    BankAccountsModule,
     // ProjectsModule,
     // InvestmentsModule,
     // ReturnsModule,

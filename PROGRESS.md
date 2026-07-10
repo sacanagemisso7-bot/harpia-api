@@ -1,5 +1,7 @@
 # Progresso — Harpia API
 
+- **[2026-07-10] — CompaniesModule e BankAccountsModule:** CRUD de Company (SPE/Incorporadora, filtro ?type, inclui developments e _count) — delete bloqueia empresa com empreendimentos (409). CRUD de BankAccount (filtro ?companyId, inclui nome da company; valida companyId da org no create/update → 400). Ambos registrados no AppModule.
+
 - **[2026-07-10] — PeopleModule:** Substituído o antigo InvestorsModule pelo PeopleModule (Person + PersonRole). CRUD completo com filtro por papel e busca, documento único por organização, includes (roles/investments/interactions/documents), e endpoints de papéis (POST/DELETE /people/:id/roles). Delete bloqueia pessoa com investimentos (409). Módulos antigos ainda não migrados foram excluídos do build temporariamente.
 
 - **[2026-07-10] — Novo seed (arquitetura de incorporadora):** Reescrito o `prisma/seed.ts` para o novo schema — org "Harpia Incorporadora", admin, 3 companies (1 incorporadora + 2 SPEs), 3 contas bancárias, 6 pessoas com papéis (João como INVESTIDOR+CLIENTE), 2 empreendimentos, 3 tipologias, 6 unidades com preços (Modelo B), e o fluxo Investment → Allocation (incl. caixa geral) → Return. Populado no Neon sem erro.
