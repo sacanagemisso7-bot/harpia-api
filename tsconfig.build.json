@@ -6,7 +6,6 @@
     "dist",
     "prisma",
     "**/*spec.ts",
-    "src/projects",
     "src/investments",
     "src/returns",
     "src/documents",

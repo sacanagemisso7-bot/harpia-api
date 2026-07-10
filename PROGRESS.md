@@ -1,5 +1,7 @@
 # Progresso — Harpia API
 
+- **[2026-07-10] — Developments, UnitTypes, Units, PriceTables:** Substituído o antigo ProjectsModule pelo DevelopmentsModule (filtros ?status/?type/?companyId, detalhe com unitTypes/units/priceTables, delete bloqueia se houver alocação → 409). Criados UnitTypesModule e UnitsModule (ambos escopados por ?developmentId, com validação cruzada tipologia×empreendimento). PriceTablesModule com preço por unidade (Modelo B): POST /price-tables/:id/prices faz upsert do UnitPrice, + PATCH/DELETE /unit-prices/:id. Todos org-scoped.
+
 - **[2026-07-10] — CompaniesModule e BankAccountsModule:** CRUD de Company (SPE/Incorporadora, filtro ?type, inclui developments e _count) — delete bloqueia empresa com empreendimentos (409). CRUD de BankAccount (filtro ?companyId, inclui nome da company; valida companyId da org no create/update → 400). Ambos registrados no AppModule.
 
 - **[2026-07-10] — PeopleModule:** Substituído o antigo InvestorsModule pelo PeopleModule (Person + PersonRole). CRUD completo com filtro por papel e busca, documento único por organização, includes (roles/investments/interactions/documents), e endpoints de papéis (POST/DELETE /people/:id/roles). Delete bloqueia pessoa com investimentos (409). Módulos antigos ainda não migrados foram excluídos do build temporariamente.
