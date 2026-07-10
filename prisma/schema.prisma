@@ -7,19 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ---------------------------------------------------------------------------
+// Tenant raiz
+// ---------------------------------------------------------------------------
+
 model Organization {
-  id           String        @id @default(cuid())
-  name         String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   users        User[]
-  projects     Project[]
-  investors    Investor[]
+  people       Person[]
+  personRoles  PersonRole[]
+  companies    Company[]
+  bankAccounts BankAccount[]
+  developments Development[]
+  unitTypes    UnitType[]
+  units        Unit[]
+  priceTables  PriceTable[]
+  unitPrices   UnitPrice[]
   investments  Investment[]
+  allocations  Allocation[]
   returns      Return[]
   documents    Document[]
   interactions Interaction[]
 }
+
+// ---------------------------------------------------------------------------
+// Contas de login
+// ---------------------------------------------------------------------------
 
 model User {
   id             String       @id @default(cuid())
@@ -28,113 +45,332 @@ model User {
   name           String
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
+  personId       String?
+  person         Person?      @relation(fields: [personId], references: [id], onDelete: SetNull)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
 
-model Project {
-  id             String        @id @default(cuid())
-  name           String
-  description    String?
-  status         ProjectStatus @default(EM_CAPTACAO)
-  location       String?
-  organizationId String
-  organization   Organization  @relation(fields: [organizationId], references: [id])
-  investments    Investment[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-}
+// ---------------------------------------------------------------------------
+// Pessoas e papéis
+// ---------------------------------------------------------------------------
 
-model Investor {
-  id             String         @id @default(cuid())
+model Person {
+  id             String             @id @default(cuid())
+  organizationId String
+  organization   Organization       @relation(fields: [organizationId], references: [id])
   name           String
+  documentType   PersonDocumentType
+  document       String
+  personType     PersonType
   email          String?
   phone          String?
-  status         InvestorStatus @default(PROSPECTO)
-  entryDate      DateTime?
+  address        String?
   notes          String?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  roles        PersonRole[]
+  users        User[]
+  investments  Investment[]
+  documents    Document[]
+  interactions Interaction[]
+
+  @@unique([organizationId, document])
+}
+
+model PersonRole {
+  id             String         @id @default(cuid())
+  personId       String
+  person         Person         @relation(fields: [personId], references: [id], onDelete: Cascade)
   organizationId String
   organization   Organization   @relation(fields: [organizationId], references: [id])
-  investments    Investment[]
-  documents      Document[]
-  interactions   Interaction[]
+  role           PersonRoleType
   createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+
+  @@unique([personId, role])
 }
+
+// ---------------------------------------------------------------------------
+// Empresas (SPE / Incorporadora) e contas bancárias
+// ---------------------------------------------------------------------------
+
+model Company {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  name           String
+  cnpj           String
+  type           CompanyType
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  developments Development[]
+  bankAccounts BankAccount[]
+}
+
+model BankAccount {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  bank           String
+  agency         String
+  account        String
+  companyId      String?
+  company        Company?     @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Empreendimentos, tipologias, unidades e preços
+// ---------------------------------------------------------------------------
+
+model Development {
+  id                   String            @id @default(cuid())
+  organizationId       String
+  organization         Organization      @relation(fields: [organizationId], references: [id])
+  name                 String
+  description          String?
+  type                 DevelopmentType
+  companyId            String?
+  company              Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  address              String?
+  city                 String?
+  status               DevelopmentStatus @default(EM_CAPTACAO)
+  expectedLaunchDate   DateTime?
+  expectedDeliveryDate DateTime?
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  unitTypes   UnitType[]
+  units       Unit[]
+  priceTables PriceTable[]
+  allocations Allocation[]
+  documents   Document[]
+}
+
+model UnitType {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  developmentId  String
+  development    Development  @relation(fields: [developmentId], references: [id], onDelete: Cascade)
+  name           String
+  bedrooms       Int?
+  suites         Int?
+  standardArea   Float?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  units Unit[]
+}
+
+model Unit {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  developmentId  String
+  development    Development  @relation(fields: [developmentId], references: [id], onDelete: Cascade)
+  identifier     String
+  unitTypeId     String?
+  unitType       UnitType?    @relation(fields: [unitTypeId], references: [id], onDelete: SetNull)
+  category       UnitCategory
+  grouping       String?
+  landArea       Float?
+  builtArea      Float?
+  parkingSpots   Int?
+  status         UnitStatus   @default(DISPONIVEL)
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  prices    UnitPrice[]
+  documents Document[]
+}
+
+model PriceTable {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  developmentId  String
+  development    Development  @relation(fields: [developmentId], references: [id], onDelete: Cascade)
+  name           String
+  phase          String
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  unitPrices UnitPrice[]
+}
+
+model UnitPrice {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  unitId         String
+  unit           Unit         @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  priceTableId   String
+  priceTable     PriceTable   @relation(fields: [priceTableId], references: [id], onDelete: Cascade)
+  value          Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([unitId, priceTableId])
+}
+
+// ---------------------------------------------------------------------------
+// Investimentos, alocações e retornos
+// ---------------------------------------------------------------------------
 
 model Investment {
   id             String         @id @default(cuid())
+  organizationId String
+  organization   Organization   @relation(fields: [organizationId], references: [id])
+  investorId     String
+  investor       Person         @relation(fields: [investorId], references: [id])
   amount         Float
   date           DateTime
   type           InvestmentType @default(FINANCEIRO)
   notes          String?
-  investorId     String
-  investor       Investor       @relation(fields: [investorId], references: [id])
-  projectId      String
-  project        Project        @relation(fields: [projectId], references: [id])
-  organizationId String
-  organization   Organization   @relation(fields: [organizationId], references: [id])
-  returns        Return[]
-  documents      Document[]
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+
+  allocations Allocation[]
+  documents   Document[]
+}
+
+model Allocation {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  investmentId   String
+  investment     Investment   @relation(fields: [investmentId], references: [id], onDelete: Cascade)
+  developmentId  String?
+  development    Development?  @relation(fields: [developmentId], references: [id], onDelete: SetNull)
+  amount         Float
+  date           DateTime
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  returns Return[]
 }
 
 model Return {
   id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  allocationId   String
+  allocation     Allocation   @relation(fields: [allocationId], references: [id], onDelete: Cascade)
   expectedAmount Float
   expectedDate   DateTime
   realizedDate   DateTime?
   realizedAmount Float?
   status         ReturnStatus @default(PENDENTE)
-  investmentId   String
-  investment     Investment   @relation(fields: [investmentId], references: [id])
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 }
 
+// ---------------------------------------------------------------------------
+// Documentos e interações
+// ---------------------------------------------------------------------------
+
 model Document {
   id             String           @id @default(cuid())
+  organizationId String
+  organization   Organization     @relation(fields: [organizationId], references: [id])
   name           String
   fileUrl        String
   category       DocumentCategory @default(OUTRO)
-  investorId     String?
-  investor       Investor?        @relation(fields: [investorId], references: [id])
+  personId       String?
+  person         Person?          @relation(fields: [personId], references: [id], onDelete: SetNull)
   investmentId   String?
-  investment     Investment?      @relation(fields: [investmentId], references: [id])
-  organizationId String
-  organization   Organization     @relation(fields: [organizationId], references: [id])
+  investment     Investment?      @relation(fields: [investmentId], references: [id], onDelete: SetNull)
+  unitId         String?
+  unit           Unit?            @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  developmentId  String?
+  development    Development?     @relation(fields: [developmentId], references: [id], onDelete: SetNull)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
 
 model Interaction {
   id             String          @id @default(cuid())
+  organizationId String
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  personId       String
+  person         Person          @relation(fields: [personId], references: [id], onDelete: Cascade)
   date           DateTime
   type           InteractionType @default(OUTRO)
   summary        String
   nextStep       String?
-  investorId     String
-  investor       Investor        @relation(fields: [investorId], references: [id])
-  organizationId String
-  organization   Organization    @relation(fields: [organizationId], references: [id])
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
 
-enum ProjectStatus {
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum PersonDocumentType {
+  CPF
+  CNPJ
+}
+
+enum PersonType {
+  FISICA
+  JURIDICA
+}
+
+enum PersonRoleType {
+  LEAD
+  CLIENTE
+  CORRETOR
+  FUNCIONARIO
+  FORNECEDOR
+  PARCEIRO
+  INVESTIDOR
+}
+
+enum CompanyType {
+  SPE
+  INCORPORADORA
+}
+
+enum DevelopmentType {
+  PREDIO
+  CONDOMINIO_CASAS
+  LOTEAMENTO
+  COMERCIAL
+  MISTO
+}
+
+enum DevelopmentStatus {
+  EM_APROVACAO
   EM_CAPTACAO
   EM_OBRA
+  PRONTO
   ENTREGUE
   CANCELADO
 }
 
-enum InvestorStatus {
-  ATIVO
-  PROSPECTO
-  INATIVO
+enum UnitCategory {
+  APARTAMENTO
+  CASA
+  LOTE
+  SALA_COMERCIAL
+}
+
+enum UnitStatus {
+  DISPONIVEL
+  RESERVADA
+  VENDIDA
+  QUITADA
+  DISTRATADA
+  BLOQUEADA
+  PERMUTADA
 }
 
 enum InvestmentType {
