@@ -17,8 +17,7 @@ import { AllocationsModule } from './allocations/allocations.module';
 import { ReturnsModule } from './returns/returns.module';
 import { DocumentsModule } from './documents/documents.module';
 import { InteractionsModule } from './interactions/interactions.module';
-// Módulos antigos aguardando migração para o novo schema (comentados p/ build passar):
-// import { DashboardModule } from './dashboard/dashboard.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
@@ -38,7 +37,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     ReturnsModule,
     DocumentsModule,
     InteractionsModule,
-    // DashboardModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

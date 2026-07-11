@@ -1,5 +1,7 @@
 # Progresso — Harpia API
 
+- **[2026-07-11] — DashboardModule (migração do backend completa):** GET /dashboard reescrito para a nova arquitetura — captação (totalCaptado/Alocado/CaixaGeral, totalInvestidores), retornos (pendentes/atrasados/pagos com a lógica de atraso), empreendimentos e unidades por status, valorEmVendas (preço da tabela ativa das unidades VENDIDA), captacaoPorEmpreendimento e últimas interações. Tudo em Promise.all. tsconfig.build.json sem exclusões: todos os módulos migrados e compilando.
+
 - **[2026-07-11] — Documents e Interactions:** Migrados para o novo schema. InteractionsModule aponta para Person (personId, antes investorId): CRUD ordenado por date desc, filtro ?personId, valida person na org. DocumentsModule com upload multipart (multer, 25MB, ./uploads): vínculos opcionais person/investment/unit/development validados na org, filtros por cada um, DELETE remove registro + arquivo do disco; upload órfão é removido se a validação falhar.
 
 - **[2026-07-10] — ReturnsModule (retorno por alocação):** Substituído o antigo ReturnsModule; Return agora pendura na Allocation (allocationId). Filtros ?allocationId/?investmentId/?developmentId/?status; cada retorno inclui a alocação com development e o investidor. Mantida a lógica de ATRASADO automático (PENDENTE vencido reportado como ATRASADO, sem persistir — filtro por status considera o computado) e a exigência de realizedDate+realizedAmount ao marcar PAGO (400).
