@@ -27,14 +27,17 @@ export class ReturnsController {
   @Get()
   findAll(
     @CurrentUser() user: AuthUser,
+    @Query('allocationId') allocationId?: string,
     @Query('investmentId') investmentId?: string,
+    @Query('developmentId') developmentId?: string,
     @Query('status') status?: ReturnStatus,
   ) {
-    return this.returnsService.findAll(
-      user.organizationId,
+    return this.returnsService.findAll(user.organizationId, {
+      allocationId,
       investmentId,
+      developmentId,
       status,
-    );
+    });
   }
 
   @Get(':id')

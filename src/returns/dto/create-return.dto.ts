@@ -9,15 +9,15 @@ import {
 } from 'class-validator';
 
 export class CreateReturnDto {
+  @IsString()
+  allocationId: string;
+
   @IsNumber()
   @IsPositive()
   expectedAmount: number;
 
   @IsDateString()
   expectedDate: string;
-
-  @IsString()
-  investmentId: string;
 
   @IsOptional()
   @IsDateString()

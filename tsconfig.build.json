@@ -6,7 +6,6 @@
     "dist",
     "prisma",
     "**/*spec.ts",
-    "src/returns",
     "src/documents",
     "src/interactions",
     "src/dashboard"
