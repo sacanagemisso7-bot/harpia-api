@@ -1,4 +1,7 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { CreateInteractionDto } from './create-interaction.dto';
 
-export class UpdateInteractionDto extends PartialType(CreateInteractionDto) {}
+// personId não muda no update — a interação pertence à pessoa registrada.
+export class UpdateInteractionDto extends PartialType(
+  OmitType(CreateInteractionDto, ['personId'] as const),
+) {}

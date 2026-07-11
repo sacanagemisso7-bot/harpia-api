@@ -15,9 +15,9 @@ import { PriceTablesModule } from './price-tables/price-tables.module';
 import { InvestmentsModule } from './investments/investments.module';
 import { AllocationsModule } from './allocations/allocations.module';
 import { ReturnsModule } from './returns/returns.module';
+import { DocumentsModule } from './documents/documents.module';
+import { InteractionsModule } from './interactions/interactions.module';
 // Módulos antigos aguardando migração para o novo schema (comentados p/ build passar):
-// import { DocumentsModule } from './documents/documents.module';
-// import { InteractionsModule } from './interactions/interactions.module';
 // import { DashboardModule } from './dashboard/dashboard.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -36,8 +36,8 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     InvestmentsModule,
     AllocationsModule,
     ReturnsModule,
-    // DocumentsModule,
-    // InteractionsModule,
+    DocumentsModule,
+    InteractionsModule,
     // DashboardModule,
   ],
   controllers: [AppController],

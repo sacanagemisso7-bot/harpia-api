@@ -44,14 +44,17 @@ export class DocumentsController {
   @Get()
   findAll(
     @CurrentUser() user: AuthUser,
-    @Query('investorId') investorId?: string,
+    @Query('personId') personId?: string,
     @Query('investmentId') investmentId?: string,
+    @Query('unitId') unitId?: string,
+    @Query('developmentId') developmentId?: string,
   ) {
-    return this.documentsService.findAll(
-      user.organizationId,
-      investorId,
+    return this.documentsService.findAll(user.organizationId, {
+      personId,
       investmentId,
-    );
+      unitId,
+      developmentId,
+    });
   }
 
   @Get(':id')

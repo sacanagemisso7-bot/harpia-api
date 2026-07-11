@@ -26,9 +26,9 @@ export class InteractionsController {
   @Get()
   findAll(
     @CurrentUser() user: AuthUser,
-    @Query('investorId') investorId?: string,
+    @Query('personId') personId?: string,
   ) {
-    return this.interactionsService.findAll(user.organizationId, investorId);
+    return this.interactionsService.findAll(user.organizationId, personId);
   }
 
   @Get(':id')

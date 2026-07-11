@@ -2,6 +2,9 @@ import { InteractionType } from '@prisma/client';
 import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
 
 export class CreateInteractionDto {
+  @IsString()
+  personId: string;
+
   @IsDateString()
   date: string;
 
@@ -10,9 +13,6 @@ export class CreateInteractionDto {
 
   @IsString()
   summary: string;
-
-  @IsString()
-  investorId: string;
 
   @IsOptional()
   @IsString()

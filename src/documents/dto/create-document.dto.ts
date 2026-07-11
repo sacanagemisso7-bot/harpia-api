@@ -11,9 +11,17 @@ export class CreateDocumentDto {
 
   @IsOptional()
   @IsString()
-  investorId?: string;
+  personId?: string;
 
   @IsOptional()
   @IsString()
   investmentId?: string;
+
+  @IsOptional()
+  @IsString()
+  unitId?: string;
+
+  @IsOptional()
+  @IsString()
+  developmentId?: string;
 }

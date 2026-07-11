@@ -8,16 +8,19 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateInteractionDto } from './dto/create-interaction.dto';
 import { UpdateInteractionDto } from './dto/update-interaction.dto';
 
+const personSelect = { select: { id: true, name: true } };
+
 @Injectable()
 export class InteractionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(organizationId: string, investorId?: string) {
+  async findAll(organizationId: string, personId?: string) {
     const where: Prisma.InteractionWhereInput = { organizationId };
-    if (investorId) where.investorId = investorId;
+    if (personId) where.personId = personId;
 
     return this.prisma.interaction.findMany({
       where,
+      include: { person: personSelect },
       orderBy: { date: 'desc' },
     });
   }
@@ -25,31 +28,30 @@ export class InteractionsService {
   async findOne(id: string, organizationId: string) {
     const interaction = await this.prisma.interaction.findFirst({
       where: { id, organizationId },
+      include: { person: personSelect },
     });
     if (!interaction) throw new NotFoundException('Interação não encontrada');
     return interaction;
   }
 
   async create(organizationId: string, dto: CreateInteractionDto) {
-    await this.assertInvestorInOrg(dto.investorId, organizationId);
+    await this.assertPersonInOrg(dto.personId, organizationId);
 
     return this.prisma.interaction.create({
       data: {
+        organizationId,
+        personId: dto.personId,
         date: new Date(dto.date),
         type: dto.type,
         summary: dto.summary,
         nextStep: dto.nextStep,
-        investorId: dto.investorId,
-        organizationId,
       },
+      include: { person: personSelect },
     });
   }
 
   async update(id: string, organizationId: string, dto: UpdateInteractionDto) {
-    await this.findOne(id, organizationId);
-    if (dto.investorId) {
-      await this.assertInvestorInOrg(dto.investorId, organizationId);
-    }
+    await this.ensureExists(id, organizationId);
 
     return this.prisma.interaction.update({
       where: { id },
@@ -58,25 +60,31 @@ export class InteractionsService {
         type: dto.type,
         summary: dto.summary,
         nextStep: dto.nextStep,
-        investorId: dto.investorId,
       },
+      include: { person: personSelect },
     });
   }
 
   async remove(id: string, organizationId: string) {
-    await this.findOne(id, organizationId);
+    await this.ensureExists(id, organizationId);
     return this.prisma.interaction.delete({ where: { id } });
   }
 
-  private async assertInvestorInOrg(
-    investorId: string,
-    organizationId: string,
-  ) {
-    const investor = await this.prisma.investor.findFirst({
-      where: { id: investorId, organizationId },
+  private async ensureExists(id: string, organizationId: string) {
+    const interaction = await this.prisma.interaction.findFirst({
+      where: { id, organizationId },
+      select: { id: true },
     });
-    if (!investor) {
-      throw new BadRequestException('Investidor inválido para esta organização');
+    if (!interaction) throw new NotFoundException('Interação não encontrada');
+  }
+
+  private async assertPersonInOrg(personId: string, organizationId: string) {
+    const person = await this.prisma.person.findFirst({
+      where: { id: personId, organizationId },
+      select: { id: true },
+    });
+    if (!person) {
+      throw new BadRequestException('Pessoa inválida para esta organização');
     }
   }
 }
